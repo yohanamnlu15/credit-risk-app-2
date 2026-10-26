@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Hasil build web (dibuat ulang dengan: flutter build web)
+build_web/
+
+# Kredensial lokal - JANGAN di-commit
+backend/.env
+!backend/.env.example
+
+# Python
+__pycache__/
+.pytest_cache/
