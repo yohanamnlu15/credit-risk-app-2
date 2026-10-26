@@ -1,0 +1,45 @@
+name: credit_risk_app
+description: "Aplikasi Prediksi Risiko Kredit - Frontend Internal (Mock Data)"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  http: ^1.2.2
+  pdf: ^3.11.1
+  share_plus: ^10.1.4
+  file_saver: ^0.2.14
+  path_provider: ^2.1.4
+  fl_chart: ^0.68.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#0A2647"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#0A2647"
+    theme_color: "#0A2647"
+  windows:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    icon_size: 256
+
+
+
+flutter:
+  uses-material-design: true
