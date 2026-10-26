@@ -4,7 +4,7 @@
 evaluasi_model.py
 =================
 Menguji kembali model C4.5 yang dipakai aplikasi dan mencetak metrik
-evaluasinya, persis seperti Tabel 4.23 - 4.26 di skripsi.
+evaluasinya, lalu membandingkannya dengan hasil acuan (training ulang Colab).
 
 Skrip ini HANYA MEMBACA data & model. Tidak mengubah apa pun,
 kecuali Anda sendiri memakai opsi --retrain.
@@ -56,14 +56,14 @@ FITUR = [
     "Pekerjaan",
 ]
 
-# Angka pembanding dari skripsi (Tabel 4.23 - 4.26)
+# Angka pembanding = hasil training ulang (sama dengan kode Google Colab)
 TARGET = {
-    "cm": [[30, 3], [3, 4]],
+    "cm": [[31, 2], [4, 3]],
     "akurasi": 85.00,
-    "precision_lancar": 90.91,
-    "recall_lancar": 90.91,
-    "precision_macet": 57.14,
-    "recall_macet": 57.14,
+    "precision_lancar": 88.57,
+    "recall_lancar": 93.94,
+    "precision_macet": 60.00,
+    "recall_macet": 42.86,
 }
 
 
@@ -254,7 +254,6 @@ def main():
         f"            daun = {model.get_n_leaves()}  |  kedalaman = {model.get_depth()}"
         f"  |  class_weight = {model.class_weight}"
     )
-    print("            (class_weight='balanced' inilah yang membuat model peka ke Macet)")
     print("Pembagian : 80% latih / 20% uji  |  random_state=42  |  stratify")
     garis()
 
@@ -273,9 +272,9 @@ def main():
 
     # ---- perbandingan dengan skripsi ----
     garis()
-    print("PERBANDINGAN DENGAN SKRIPSI (Tabel 4.23 - 4.26)")
+    print("PERBANDINGAN DENGAN HASIL ACUAN (training ulang Colab)")
     garis()
-    print(f"{'Metrik':<24}{'Hasil':>14}{'Skripsi':>12}{'Status':>8}")
+    print(f"{'Metrik':<24}{'Hasil':>14}{'Acuan':>12}{'Status':>8}")
     print("-" * 58)
 
     cocok_cm = cm.tolist() == TARGET["cm"]
@@ -314,10 +313,9 @@ def main():
 
     print("-" * 58)
     if all(semua):
-        print("KESIMPULAN: model ini SAMA dengan yang menghasilkan Tabel 4.23-4.26.")
-        print("            Seluruh angka skripsi berhasil direproduksi. [OK]")
+        print("KESIMPULAN: model ini SAMA dengan hasil training ulang Colab. [OK]")
     else:
-        print("KESIMPULAN: ada angka yang BERBEDA dari skripsi.")
+        print("KESIMPULAN: ada angka yang BERBEDA dari hasil acuan.")
         print("            Periksa: versi scikit-learn, isi dataset, atau model yang dipakai.")
 
     # ---- detail 40 baris ----
@@ -345,14 +343,13 @@ def main():
     if args.retrain:
         print()
         garis()
-        print("LATIH ULANG DARI NOL (parameter skripsi, class_weight='balanced')")
+        print("LATIH ULANG DARI NOL (parameter model acuan: split=10, leaf=5)")
         garis()
         model_baru = DecisionTreeClassifier(
             criterion="entropy",
-            class_weight="balanced",
             max_depth=None,
-            min_samples_split=2,
-            min_samples_leaf=1,
+            min_samples_split=10,
+            min_samples_leaf=5,
             random_state=42,
         ).fit(X_train, y_train)
         pred_baru = model_baru.predict(X_test)
@@ -364,11 +361,11 @@ def main():
         print(f"Akurasi    : {akurasi_baru * 100:.2f}%")
         print(f"CM         : {cm_baru.tolist()}")
         print(
-            f"Cocok dgn skripsi? {'YA' if cm_baru.tolist() == TARGET['cm'] else 'TIDAK'}"
+            f"Cocok dgn acuan? {'YA' if cm_baru.tolist() == TARGET['cm'] else 'TIDAK'}"
         )
         print()
-        print("Jika hasil ini sama, berarti resep training skripsi sudah terverifikasi")
-        print("dan bisa dipakai untuk melatih ulang (mis. menambah data).")
+        print("Jika hasil ini sama, model bisa dilatih ulang kapan saja")
+        print("(mis. setelah menambah data) dengan hasil yang konsisten.")
 
     print()
     garis()

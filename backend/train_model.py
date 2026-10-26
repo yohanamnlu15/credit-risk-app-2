@@ -1,24 +1,33 @@
 """
-⚠️ PERINGATAN — BACA DULU SEBELUM MENJALANKAN ⚠️
+Pipeline training model 7 fitur (dengan tabungan) yang DIPAKAI APLIKASI.
 
-Script ini mendokumentasikan pipeline training model 7 fitur (dengan tabungan).
-Namun model yang saat ini ter-deploy (model_ml/) adalah model ASLI hasil training
-penulis skripsi yang mencapai akurasi 85% pada data uji 80:20 — pipeline persisnya
-(dari Google Colab) tidak tersimpan, sehingga TIDAK dapat direproduksi persis dari
-dataset saat ini (hasil training ulang = pohon berbeda, akurasi ~72,5%).
+Model ini menggantikan model Colab awal (yang memakai class_weight='balanced'
+dengan min_samples_split=2 / min_samples_leaf=1) agar prediksi tidak selalu
+100%. Parameter di bawah SAMA PERSIS dengan kode Google Colab yang disepakati:
 
-Jalankan script ini HANYA jika Anda sengaja ingin mengganti model:
-  - Model lama otomatis tertimpa (backup dulu folder model_ml/ jika perlu)
-  - Angka evaluasi skripsi (85%, Tabel 4.23-4.26) TIDAK berlaku lagi utk model baru
-  - Setelah menjalankan, catat metrik baru (dibuat otomatis di output) dan
-    perbarui skripsi.
+    criteria='entropy', max_depth=None,
+    min_samples_split=10, min_samples_leaf=5, random_state=42
+    (tanpa class_weight)
+
+Hasil pada data uji 80:20 (40 data):
+    Akurasi 85,00% | Confusion Matrix [[31, 2], [4, 3]]
+    Lancar: precision 88,57% recall 93,94%
+    Macet : precision 60,00% recall 42,86%
+
+Model asli (balanced, split=2/leaf=1, akurasi 85%, CM [[30,3],[3,4]]) tetap
+disimpan di model_ml_backup_asli/ untuk pembanding.
+
+⚠️ Model berubah -> angka di skripsi wajib diperbarui:
+   Tabel 4.11 (parameter), 4.23 (confusion matrix), 4.24-4.26 (metrik),
+   serta gambar pohon (16 daun, kedalaman 6). Akurasi tetap 85,00%.
 
 Pipeline (sesuai skripsi — 7 fitur, Tabel 4.10):
   1. Load data/Data_Nasabah.xlsx (200 data KSP Pahae Jaya)
   2. Kategorisasi (Bab III): usia, pendapatan, durasi, tanggungan, pinjaman, tabungan
   3. Label Encoding per atribut + target (Lancar/Macet)
   4. Split 80:20 (random_state=42, stratify)
-  5. DecisionTreeClassifier(criterion='entropy', random_state=42)
+  5. DecisionTreeClassifier(criterion='entropy', min_samples_split=10,
+     min_samples_leaf=5, random_state=42)
 """
 
 import os

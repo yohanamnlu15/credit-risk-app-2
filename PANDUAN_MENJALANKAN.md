@@ -20,26 +20,37 @@ Anda hanya perlu:
 
 ## 🧪 Data Uji untuk Mencoba Aplikasi
 
-### Hasil MACET dengan confidence BUKAN 100% (81,9%):
+> Model saat ini: `min_samples_split=10`, `min_samples_leaf=5`, tanpa
+> `class_weight` → **akurasi 85%**, CM `[[31, 2], [4, 3]]`, 16 daun, kedalaman 6.
+> Hasil non-100% kini tersedia di **kedua kelas**.
+
+### Hasil LANCAR dengan confidence BUKAN 100%
 
 | No | Usia | Pekerjaan | Gaji | Tanggungan | Pinjaman | Tabungan | Durasi | Hasil |
 |---|---|---|---|---|---|---|---|---|
-| 1 | 35 | Karyawan | 6.000.000 | 2 | 50.000.000 | 2.000.000 | 120 Hari | **Macet (81,9%)** |
-| 2 | 40 | Karyawan | 5.000.000 | 1 | 25.000.000 | 5.000.000 | 120 Hari | **Macet (81,9%)** |
-| 3 | 25 | Buruh | 3.000.000 | 1 | 8.000.000 | 2.000.000 | 120 Hari | **Macet (81,9%)** |
-| 4 | 35 | Wiraswasta | 6.000.000 | 2 | 50.000.000 | 2.000.000 | 120 Hari | **Macet (81,9%)** |
+| 1 | 35 | Buruh | 5.000.000 | 5 | 25.000.000 | 10.000.000 | 300 Hari | **Lancar (83,3%)** |
+| 2 | 35 | Buruh | 5.000.000 | 1 | 25.000.000 | 10.000.000 | 120 Hari | **Lancar (80,0%)** |
+| 3 | 35 | Buruh | 5.000.000 | 1 | 15.000.000 | 10.000.000 | 120 Hari | **Lancar (75,0%)** |
+| 4 | 40 | PNS | 5.000.000 | 3 | 15.000.000 | 2.000.000 | 120 Hari | **Lancar (66,7%)** |
+| 5 | 25 | Buruh | 3.000.000 | 1 | 25.000.000 | 10.000.000 | 300 Hari | **Lancar (57,1%)** |
 
-### Hasil lain untuk pembanding:
+### Hasil MACET dengan confidence BUKAN 100%
 
 | No | Usia | Pekerjaan | Gaji | Tanggungan | Pinjaman | Tabungan | Durasi | Hasil |
 |---|---|---|---|---|---|---|---|---|
-| 5 | 40 | Buruh | 3.000.000 | 3 | 15.000.000 | 2.000.000 | 120 Hari | Macet (100%) |
-| 6 | 45 | PNS | 8.000.000 | 2 | 10.000.000 | 10.000.000 | 300 Hari | Lancar (100%) |
-| 7 | 40 | Wiraswasta | 10.000.000 | 1 | 20.000.000 | 15.000.000 | 365 Hari | Lancar (100%) |
+| 6 | 35 | Buruh | 5.000.000 | 5 | 25.000.000 | 10.000.000 | 120 Hari | **Macet (83,3%)** |
+| 7 | 35 | Buruh | 5.000.000 | 5 | 25.000.000 | 2.000.000 | 300 Hari | **Macet (57,1%)** |
 
-> Catatan: pada model ini, satu-satunya hasil non-100% adalah **Macet (81,9%)**
-> (29 kombinasi input, semuanya berciri: tanggungan sedikit + pinjaman besar +
-> durasi pendek). Semua prediksi Lancar selalu 100%.
+### Hasil 100% untuk pembanding
+
+| No | Usia | Pekerjaan | Gaji | Tanggungan | Pinjaman | Tabungan | Durasi | Hasil |
+|---|---|---|---|---|---|---|---|---|
+| 8 | 45 | PNS | 8.000.000 | 2 | 10.000.000 | 10.000.000 | 300 Hari | Lancar (100%) |
+| 9 | 40 | Wiraswasta | 10.000.000 | 1 | 20.000.000 | 15.000.000 | 365 Hari | Lancar (100%) |
+
+> Catatan: dari 3.402 kombinasi input, **1.149 menghasilkan Lancar non-100%**
+> (83,3% · 80,0% · 75,0% · 66,7% · 57,1%) dan **378 menghasilkan Macet non-100%**
+> (83,3% · 57,1%).
 
 ---
 
@@ -49,7 +60,7 @@ Cara paling mudah (Windows):
 
 1. Buka folder **`backend`**
 2. Double-click **`EVALUASI MODEL.bat`**
-3. Tunggu ±5 detik → muncul confusion matrix, akurasi, dan perbandingan otomatis dengan skripsi
+3. Tunggu ±5 detik → muncul confusion matrix, akurasi, dan perbandingan otomatis dengan hasil acuan
 
 Atau lewat terminal:
 
@@ -64,8 +75,8 @@ Hasil yang benar:
 
 ```
 AKURASI : 85.0 %
-Bentuk ringkas : [[30, 3], [3, 4]]
-KESIMPULAN: model ini SAMA dengan yang menghasilkan Tabel 4.23-4.26. [OK]
+Bentuk ringkas : [[31, 2], [4, 3]]
+KESIMPULAN: model ini SAMA dengan hasil training ulang Colab. [OK]
 ```
 
 > Jika muncul pesan `openpyxl belum terpasang`, jalankan:
@@ -131,9 +142,10 @@ wsl -e bash /home/wilarefa/example/aplikasi-ta/start_app.sh
 | Folder/File | Fungsi |
 |---|---|
 | `backend/app.py` | Kode server API (Flask) — versi 7 fitur dengan tabungan |
-| `backend/model_ml/` | Model ASLI hasil training penulis skripsi (akurasi 85%) — **jangan ditimpa** |
-| `backend/train_model.py` | Dokumentasi pipeline training. ⚠️ Menjalankannya MENGGANTI model & angka skripsi berubah — baca peringatan di dalamnya |
-| `backend/evaluasi_model.py` | Menguji model & mencetak metrik Tabel 4.23–4.26 (tidak mengubah apa pun) |
+| `backend/model_ml/` | Model yang dipakai aplikasi — hasil training ulang (`split=10`, `leaf=5`), akurasi 85%, CM [[31, 2], [4, 3]] |
+| `backend/model_ml_backup_asli/` | Model ASLI Colab awal (`class_weight='balanced'`, `split=2`, `leaf=1`, CM [[30, 3], [3, 4]]) — arsip pembanding |
+| `backend/train_model.py` | Pipeline training model saat ini (sama dengan kode Google Colab). Menjalankannya menimpa `model_ml/` |
+| `backend/evaluasi_model.py` | Menguji model & mencetak metrik (tidak mengubah apa pun) |
 | `backend/EVALUASI MODEL.bat` | Tombol sekali-klik untuk menjalankan evaluasi di Windows |
 | `backend/data/Data_Nasabah.xlsx` | Dataset training 200 data KSP Pahae Jaya |
 | `credit_risk_app_v1_backup` (di luar folder ini) | Versi aplikasi lama (6 fitur, tanpa tabungan) — arsip |
