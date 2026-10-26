@@ -32,6 +32,16 @@ from sklearn.tree import DecisionTreeClassifier
 
 warnings.filterwarnings("ignore")
 
+# openpyxl dibutuhkan pandas untuk membaca file .xlsx
+try:
+    import openpyxl  # noqa: F401
+except ImportError:
+    sys.exit(
+        "[X] Library 'openpyxl' belum terpasang.\n"
+        "    Jalankan dulu:  pip install openpyxl\n"
+        "    (atau: pip install -r requirements.txt)"
+    )
+
 BASE = Path(__file__).resolve().parent
 FILE_DATA = BASE / "data" / "Data_Nasabah.xlsx"
 
