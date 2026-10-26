@@ -43,6 +43,36 @@ Anda hanya perlu:
 
 ---
 
+## 📊 Menguji Model — Metrik Tabel 4.23
+
+Cara paling mudah (Windows):
+
+1. Buka folder **`backend`**
+2. Double-click **`EVALUASI MODEL.bat`**
+3. Tunggu ±5 detik → muncul confusion matrix, akurasi, dan perbandingan otomatis dengan skripsi
+
+Atau lewat terminal:
+
+```bash
+cd backend
+python evaluasi_model.py            # ringkas
+python evaluasi_model.py --detail   # + 40 baris data uji
+python evaluasi_model.py --retrain  # + latih ulang dari nol
+```
+
+Hasil yang benar:
+
+```
+AKURASI : 85.0 %
+Bentuk ringkas : [[30, 3], [3, 4]]
+KESIMPULAN: model ini SAMA dengan yang menghasilkan Tabel 4.23-4.26. [OK]
+```
+
+> Jika muncul pesan `openpyxl belum terpasang`, jalankan:
+> `pip install -r requirements.txt`
+
+---
+
 ## Alternatif: menjalankan lewat terminal (satu perintah, seperti `npm run dev`)
 
 ```bash
@@ -103,5 +133,7 @@ wsl -e bash /home/wilarefa/example/aplikasi-ta/start_app.sh
 | `backend/app.py` | Kode server API (Flask) — versi 7 fitur dengan tabungan |
 | `backend/model_ml/` | Model ASLI hasil training penulis skripsi (akurasi 85%) — **jangan ditimpa** |
 | `backend/train_model.py` | Dokumentasi pipeline training. ⚠️ Menjalankannya MENGGANTI model & angka skripsi berubah — baca peringatan di dalamnya |
+| `backend/evaluasi_model.py` | Menguji model & mencetak metrik Tabel 4.23–4.26 (tidak mengubah apa pun) |
+| `backend/EVALUASI MODEL.bat` | Tombol sekali-klik untuk menjalankan evaluasi di Windows |
 | `backend/data/Data_Nasabah.xlsx` | Dataset training 200 data KSP Pahae Jaya |
 | `credit_risk_app_v1_backup` (di luar folder ini) | Versi aplikasi lama (6 fitur, tanpa tabungan) — arsip |
